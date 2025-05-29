@@ -1,0 +1,40 @@
+services:
+  nginx:
+    image: ghcr.io/luka-lta/linkifyr/api-nginx:production
+    container_name: 'nginx-linkifyr'
+    ports:
+      - '80:80'
+    volumes:
+      - ./public:/app/public:rw
+      - ./docker/nginx/nginx-development.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - php-fpm-api
+    networks:
+      - linkifyr-shared
+
+  php-fpm-api:
+    image: ghcr.io/luka-lta/linkifyr/api-php-fpm:production
+    container_name: 'php-fpm-linkifyr'
+    working_dir: /app
+    environment:
+      APP_ENV: 'production'
+      MYSQL_DATABASE: 'linkifyr'
+      MYSQL_HOST: 'mysql-linkifyr'
+      MYSQL_USER: 'testing'
+      MYSQL_PASSWORD: '1234'
+      REDIS_HOST: 'redis-linkifyr'
+      REDIS_PORT: '6379'
+      REDIS_PASSWORD: '1234'
+      JWT_SECRET: 'D17c14F3ff!470cEbe5f85df1efc966b0Fcdc@2096'
+      JWT_NORMAL_EXPIRATION_TIME: 86400
+      JWT_EXTENDED_EXPIRATION_TIME: 604800
+      LOG_LEVEL: 'debug'
+      LOG_FILE_PATH: '/app/logs'
+    volumes:
+      - ./:/app:rw
+    networks:
+      - linkifyr-shared
+
+networks:
+  linkifyr-shared:
+    driver: bridge
