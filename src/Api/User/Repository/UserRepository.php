@@ -38,6 +38,7 @@ class UserRepository
                 'createdAt'    => $user->getCreatedAt()->format('Y-m-d H:i:s'),
                 'updatedAt'    => $user->getUpdatedAt()?->format('Y-m-d H:i:s'),
             ]);
+            $this->pdo->commit();
         } catch (PDOException $exception) {
             $this->pdo->rollBack();
 
