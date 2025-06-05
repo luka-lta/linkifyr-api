@@ -10,7 +10,7 @@ use DateTimeInterface;
 class User
 {
     private function __construct(
-        private readonly string                $userId,
+        private readonly UserId             $userId,
         private Username                    $username,
         private Email                       $email,
         private Password                    $password,
@@ -20,11 +20,11 @@ class User
     }
 
     public static function from(
-        string $userId,
-        Username $username,
-        Email $email,
-        Password $password,
-        DateTimeImmutable $createdAt,
+        UserId             $userId,
+        Username           $username,
+        Email              $email,
+        Password           $password,
+        DateTimeImmutable  $createdAt,
         ?DateTimeImmutable $updatedAt = null
     ): self {
         return new self(
@@ -40,7 +40,7 @@ class User
     public static function fromDatabase(array $data): self
     {
         return new self(
-            $data['userId'],
+            UserId::from($data['userId']),
             Username::from($data['username']),
             Email::from($data['email']),
             Password::fromHash($data['password']),
@@ -52,9 +52,9 @@ class User
     public function toArray(): array
     {
         return [
-            'userId'    => $this->userId,
-            'username'  => $this->username->value(),
-            'email'     => $this->email->value(),
+            'userId' => $this->userId->value(),
+            'username' => $this->username->value(),
+            'email' => $this->email->value(),
             'createdAt' => $this->createdAt->format(DateTimeInterface::ATOM),
             'updatedAt' => $this->updatedAt?->format(DateTimeInterface::ATOM),
         ];
@@ -65,7 +65,7 @@ class User
         return $this->userId === $other->userId;
     }
 
-    public function getUserId(): string
+    public function getUserId(): UserId
     {
         return $this->userId;
     }
