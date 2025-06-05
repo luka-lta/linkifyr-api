@@ -42,6 +42,10 @@ final class Password
 
         $hashedPassword = password_hash($plainPassword, PASSWORD_DEFAULT);
 
+        if (!$hashedPassword) {
+            throw new LinkifyrValidationException('Failed to hash password');
+        }
+
         return new self($hashedPassword);
     }
 

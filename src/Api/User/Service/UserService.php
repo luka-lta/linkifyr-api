@@ -31,14 +31,6 @@ class UserService
         $email = $body['email'];
         $password = $body['password'];
 
-        try {
-
-        } catch (LinkifyrUserAlreadyExistsException $e) {
-            return ApiResult::from(
-                JsonResult::from($e->getMessage(), $e->getCode()),
-            );
-        }
-
         $user = User::from(
             UserId::generate(),
             Username::from($username),

@@ -62,7 +62,7 @@ class User
 
     public function equals(User $other): bool
     {
-        return $this->userId === $other->userId;
+        return $this->userId->equals($other->userId);
     }
 
     public function getUserId(): UserId

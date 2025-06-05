@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LinkifyrApi\Api\User\Repository;
 
 use LinkifyrApi\Exception\LinkifyrDatabaseException;
+use LinkifyrApi\Exception\LinkifyrUserAlreadyExistsException;
 use LinkifyrApi\Value\User\User;
 use PDO;
 use PDOException;
@@ -39,6 +40,14 @@ class UserRepository
             ]);
         } catch (PDOException $exception) {
             $this->pdo->rollBack();
+
+            if ($exception->getCode() === '23000') {
+                throw new LinkifyrUserAlreadyExistsException(
+                    'User with this username or email already exists',
+                    previous: $exception
+                );
+            }
+
             throw new LinkifyrDatabaseException(
                 'Failed to create user: ' . $exception->getMessage(),
                 previous: $exception
