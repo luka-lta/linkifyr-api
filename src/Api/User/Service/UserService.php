@@ -6,7 +6,6 @@ namespace LinkifyrApi\Api\User\Service;
 
 use DateTimeImmutable;
 use LinkifyrApi\Api\User\Repository\UserRepository;
-use LinkifyrApi\Exception\LinkifyrUserAlreadyExistsException;
 use LinkifyrApi\Value\Result\ApiResult;
 use LinkifyrApi\Value\Result\JsonResult;
 use LinkifyrApi\Value\User\Email;
@@ -24,7 +23,7 @@ class UserService
     ) {
     }
 
-    public function create(ServerRequestInterface $request, ResponseInterface $response): ApiResult
+    public function create(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $body = $request->getParsedBody();
         $username = $body['username'];
@@ -48,6 +47,6 @@ class UserService
                     'user' => $user->toArray(),
                 ]
             )
-        );
+        )->getResponse($response);
     }
 }
