@@ -2,6 +2,7 @@
 
 namespace LinkifyrApi\Slim;
 
+use LinkifyrApi\Api\User\Action\CreateUserAction;
 use LinkifyrApi\Slim\Middleware\CORSMiddleware;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
@@ -77,7 +78,9 @@ class RouteMiddlewareCollector
     public function registerApiRoutes(App $app): void
     {
         $app->group('/api/v1', function (RouteCollectorProxy $app) {
-
+            $app->group('/users', function (RouteCollectorProxy $user) {
+                $user->post('/', CreateUserAction::class);
+            });
         });
     }
 }
