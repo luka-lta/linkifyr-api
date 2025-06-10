@@ -65,7 +65,7 @@ class UserRepository
 
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute(['userId' => $userId]);
+            $stmt->execute(['userId' => $userId->value()]);
             $userData = $stmt->fetch();
 
             if ($userData === false) {
