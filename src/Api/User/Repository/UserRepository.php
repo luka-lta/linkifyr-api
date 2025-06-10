@@ -6,7 +6,10 @@ namespace LinkifyrApi\Api\User\Repository;
 
 use LinkifyrApi\Exception\LinkifyrDatabaseException;
 use LinkifyrApi\Exception\LinkifyrUserAlreadyExistsException;
+use LinkifyrApi\Exception\LinkifyrUserNotFoundException;
+use LinkifyrApi\Value\User\Email;
 use LinkifyrApi\Value\User\User;
+use LinkifyrApi\Value\User\UserId;
 use PDO;
 use PDOException;
 
@@ -54,5 +57,49 @@ class UserRepository
                 previous: $exception
             );
         }
+    }
+
+    public function find(UserId $userId): ?User
+    {
+        $sql = 'SELECT * FROM users WHERE user_id = :userId';
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(['userId' => $userId]);
+            $userData = $stmt->fetch();
+
+            if ($userData === false) {
+                return null;
+            }
+        } catch (PDOException $exception) {
+            throw new LinkifyrDatabaseException(
+                'Failed to find user: ' . $exception->getMessage(),
+                previous: $exception
+            );
+        }
+
+        return User::fromDatabase($userData);
+    }
+
+    public function findByEmail(Email $email): ?User
+    {
+        $sql = 'SELECT * FROM users WHERE email = :email';
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(['email' => $email->value()]);
+            $userData = $stmt->fetch();
+
+            if ($userData === false) {
+                return null;
+            }
+        } catch (PDOException $exception) {
+            throw new LinkifyrDatabaseException(
+                'Failed to find user: ' . $exception->getMessage(),
+                previous: $exception
+            );
+        }
+
+        return User::fromDatabase($userData);
     }
 }
